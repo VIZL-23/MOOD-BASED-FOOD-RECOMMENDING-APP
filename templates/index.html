@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Recommendations</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        /* Body Styling - Vibrant Gradient Background with Animation */
+        body {
+            background: linear-gradient(135deg, #ff7eb3, #ff758c, #41e1ba, #6271eb);
+            background-size: 300% 300%;
+            color: #333;
+            padding: 20px;
+            font-size: 16px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            animation: vibrantShift 6s infinite alternate;
+            overflow: auto;
+        }
+        
+        /* Vibrant Background Animation */
+        @keyframes vibrantShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Heading Styles */
+        h1 {
+            text-align: center;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #ffffff;
+            font-family: 'Georgia', serif;
+            text-shadow: 3px 3px 15px rgba(0, 0, 0, 0.4);
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        
+        /* Form Styling */
+        form {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            margin: 0 auto 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: scaleUp 1s ease-in-out;
+            border: 2px solid #ff7eb3;
+        }
+        
+        /* Input Field Styling */
+        input[type="text"] {
+            padding: 14px;
+            width: 85%;
+            border: 2px solid #6271eb;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            text-align: center;
+            outline: none;
+            transition: all 0.4s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        input[type="text"]:focus {
+            border-color: #41e1ba;
+            transform: scale(1.1);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+        }
+        
+        /* Button Styling */
+        button {
+            padding: 14px 30px;
+            background: linear-gradient(90deg, #6271eb, #41e1ba);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            margin-top: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        button:hover {
+            background: linear-gradient(90deg, #41e1ba, #ff7eb3);
+            transform: scale(1.15);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        }
+        
+        /* Recommendations Section */
+        h2 {
+            text-align: center;
+            font-size: 2.8rem;
+            margin-top: 30px;
+            color: #ffffff;
+            font-family: 'Georgia', serif;
+            text-shadow: 2px 2px 12px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1.8s ease-in-out;
+        }
+        
+        /* Grid for Recommendations */
+        ul {
+            list-style: none;
+            padding: 0;
+            max-width: 1000px;
+            margin: 20px auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            animation: fadeIn 2s ease-in-out;
+        }
+        
+        /* Individual Item */
+        li {
+            background: linear-gradient(135deg, #ffffff, #f3f3f3);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            position: relative;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            font-size: 1.2rem;
+            border-left: 6px solid #41e1ba;
+        }
+        
+        li:hover {
+            transform: translateY(-10px) rotate(2deg);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #41e1ba, #6271eb);
+            color: white;
+        }
+        
+        /* Footer Styling */
+        footer {
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: #eee;
+            text-align: center;
+            animation: fadeIn 2.5s ease-in-out;
+        }
+        
+        /* Key Animations */
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes scaleUp {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        </style>
+        
+        
+</head>
+<body>
+    <h1>Food Recommendation Based on Mood</h1>
+
+    <form action="/" method="POST">
+        <label for="mood">Enter your mood:</label>
+        <input type="text" id="mood" name="mood" required>
+        <button type="submit">Get Recommendations</button>
+    </form>
+
+    {% if food_recommendations %}
+        <h2>Food Recommendations:</h2>
+        <ul>
+        {% for item in food_recommendations %}
+            <li>
+                <span>{{ item.food }}</span>
+                <!-- "Click Me" button as a link -->
+                <a href="{{ item.recipe_url }}" class="click-me-btn" target="_blank">Click For Recipe</a>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>
